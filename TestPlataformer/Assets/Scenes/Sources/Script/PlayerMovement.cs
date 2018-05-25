@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
 {
     
     float verticalSpeed;
+    float basicHorizontalSpeed;
 
     public float gravity;    
     public float horizontalSpeed = 1;
@@ -30,11 +31,14 @@ public class PlayerMovement : MonoBehaviour
 
     public bool isMoving { get { return Input.GetAxis(GameConstants.AXIS_HORIZONTAL) != 0 || Input.GetAxis(GameConstants.AXIS_VERTICAL) != 0; } }
 
+    Vector3 leftMode { get { return transform.position - new Vector3(1.3f, 1.4f); }}
+    Vector3 rightMode { get { return transform.position + new Vector3(0.35f, -1.4f); } }
+
     bool isGrounded;
     // Use this for initialization
     void Start()
     {
-
+        basicHorizontalSpeed = horizontalSpeed;
     }
 
     // Update is called once per frame
@@ -63,8 +67,6 @@ public class PlayerMovement : MonoBehaviour
         transform.Translate(horizontalMovement * horizontalSpeed * Time.deltaTime, verticalSpeed * Time.deltaTime, 0);
 
         playerAnimator.SetFloat(GameConstants.AXIS_HORIZONTAL, horizontalMovement);
-
-        
 
         if (verticalSpeed == 0)
         {
@@ -96,33 +98,52 @@ public class PlayerMovement : MonoBehaviour
         {
             playerAnimator.SetBool(GameConstants.ANIMATOR_ATTACK, true);
         }
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+            horizontalSpeed = basicHorizontalSpeed * 1.5f;
+        } else
+        {
+            horizontalSpeed = basicHorizontalSpeed;
+        }
 
         if (playerAnimator.GetFloat(GameConstants.LAST_AXIS_HORIZONTAL) < 0) gameObject.GetComponent<SpriteRenderer>().flipX = true;
         else gameObject.GetComponent<SpriteRenderer>().flipX = false;
-        
+
+        RaycastHit2D left = Physics2D.Raycast(leftMode, Vector3.down, 0.20f);
+        RaycastHit2D right = Physics2D.Raycast(rightMode, Vector3.down, 0.20f);
+
+        if(left || right){
+            isGrounded = true;
+            verticalSpeed = 0;
+            CheckReposition(new RaycastHit2D[]{left,right});
+        } else{
+            isGrounded = false;
+        } 
+
     }
 
-    public void StopAttack()
+    void CheckReposition(RaycastHit2D[] nodeRays){
+        foreach(RaycastHit2D ray in nodeRays){
+            if(ray){
+                float distance = ray.collider.transform.localScale.y/2;
+                float difference = leftMode.y - ray.collider.transform.position.y - distance;
+                if(difference!=0){
+                    transform.Translate(0, -difference, 0);
+                } 
+            }
+        }
+    }
+
+	public void OnDrawGizmos()
+	{
+        //CODIGO DE CLASE
+        Gizmos.DrawSphere(leftMode,0.1f);
+        Gizmos.DrawSphere(rightMode, 0.1f);
+	}
+
+	public void StopAttack()
     {
         playerAnimator.SetBool(GameConstants.ANIMATOR_ATTACK, false);
     }
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        SpriteRenderer otherRenderer = other.GetComponent<SpriteRenderer>();
-        if (otherRenderer!=null && otherRenderer.CompareTag("Plataform"))
-        {
-            isGrounded = true;
-            verticalSpeed = 0;
-            RaycastHit2D hit2D = Physics2D.Raycast(transform.position, Vector3.down);
-            float currentDistance = 0;            
-            currentDistance = hit2D.distance;
-            Debug.Log(currentDistance);
-            //transform.Translate(0, 1 - currentDistance, 0);
-        } 
-        else if (otherRenderer != null && otherRenderer.CompareTag("Death"))
-        {
-            Destroy(gameObject);
-        }
-    }
 }
