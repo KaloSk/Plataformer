@@ -1,8 +1,9 @@
 ﻿<Properties StartupConfiguration="{24F15B70-4088-9714-9F9B-289159E032F1}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scenes/Sources/Script/PlayerMovement.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/FinishLevel.cs">
     <Files>
-      <File FileName="Assets/Scenes/Sources/Script/PlayerMovement.cs" Line="129" Column="34" />
+      <File FileName="Assets/Scenes/Sources/Script/PlayerMovement.cs" Line="115" Column="81" />
+      <File FileName="Assets/FinishLevel.cs" Line="30" Column="29" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

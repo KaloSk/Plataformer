@@ -29,11 +29,14 @@ public class PlayerMovement : MonoBehaviour
     public float rayDetectionDistance = 0.1f;
 
     public Animator playerAnimator;
+    public SpriteRenderer playerRenderer;
 
     public bool isMoving { get { return Input.GetAxis(GameConstants.AXIS_HORIZONTAL) != 0 || Input.GetAxis(GameConstants.AXIS_VERTICAL) != 0; } }
 
-    Vector3 leftNode { get { return transform.position - new Vector3(0.5f, 1, 0); } }
-    Vector3 rightNode { get { return transform.position + new Vector3(0.5f, -1, 0); } }
+    Vector3 leftNode { get { return transform.position - new Vector3(0.7f, playerRenderer.bounds.extents.y, 0); } }
+    Vector3 rightNode { get { return transform.position - new Vector3(-playerRenderer.bounds.extents.x+0.5f, playerRenderer.bounds.extents.y, 0); } }
+
+    public Camera currentCamera;
 
     bool isGrounded;
     // Use this for initialization
@@ -51,11 +54,25 @@ public class PlayerMovement : MonoBehaviour
         RaycastHit2D sideLeft = Physics2D.Raycast(leftNode + new Vector3(0, 0.1f, 0), Vector3.left, 0.1f);
         RaycastHit2D sideRight = Physics2D.Raycast(rightNode + new Vector3(0, 0.1f, 0), Vector3.right, 0.1f);
 
+        float horizontalMovement = Input.GetAxis(GameConstants.AXIS_HORIZONTAL);
+        if (horizontalMovement < 0)
+        {
+            if (sideLeft)
+            {
+                horizontalMovement = 0;
+            }
+        }
+        else if (horizontalMovement > 0)
+        {
+            if (sideRight)
+            {
+                horizontalMovement = 0;
+            }
+        }
 
         if (!isGrounded)
         {
             verticalSpeed -= gravity * Time.deltaTime;
-            //playerAnimator.SetBool(GameConstants.ANIMATOR_JUMP_UP, false);
 
             if (verticalSpeed < 0)
             {
@@ -84,14 +101,45 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        /*Debug.Log(verticalSpeed);*/
-
-       
-
-        float horizontalMovement = Input.GetAxis(GameConstants.AXIS_HORIZONTAL);
-
         transform.Translate(horizontalMovement * horizontalSpeed * Time.deltaTime, verticalSpeed * Time.deltaTime, 0);
 
+        characterAnimation(horizontalMovement);
+
+        cameraMovement();
+
+
+    }
+
+    void cameraMovement(){
+
+        currentCamera.transform.position = thisVector(transform.position, true);
+        /*if(currentCamera.transform.position.x < 0){
+            currentCamera.transform.position = new Vector3(0, currentCamera.transform.position.y, 0);
+        } else {*/
+        //currentCamera.transform.position = thisVector(transform.position, true);
+        //}
+
+        //Vector3 ii = transform.position - currentCamera.transform.position;
+
+        //Debug.Log(ii);
+
+       /* if(ii.x>-3){
+            currentCamera.transform.position = thisVector(transform.position, true);
+        } else {
+            currentCamera.transform.position = thisVector2(transform.position, true);
+        }*/
+    }
+
+	private Vector3 thisVector(Vector3 t, bool onlyX){
+        return new Vector3(t.x, onlyX?0:t.y, -10);
+    }
+
+    private Vector3 thisVector2(Vector3 t, bool onlyX)
+    {
+        return new Vector3(t.x+3, onlyX ? 0 : t.y, -10);
+    }
+
+    void characterAnimation(float horizontalMovement){
         playerAnimator.SetFloat(GameConstants.AXIS_HORIZONTAL, horizontalMovement);
 
         if (verticalSpeed == 0)
@@ -124,18 +172,19 @@ public class PlayerMovement : MonoBehaviour
         {
             playerAnimator.SetBool(GameConstants.ANIMATOR_ATTACK, true);
         }
-        if(Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift))
         {
             horizontalSpeed = basicHorizontalSpeed * 1.5f;
-        } else
+        }
+        else
         {
             horizontalSpeed = basicHorizontalSpeed;
         }
 
         if (playerAnimator.GetFloat(GameConstants.LAST_AXIS_HORIZONTAL) < 0) gameObject.GetComponent<SpriteRenderer>().flipX = true;
         else gameObject.GetComponent<SpriteRenderer>().flipX = false;
-        
     }
+
     void CheckVerticalClamp(RaycastHit2D[] nodeRays)
     {
         foreach (RaycastHit2D ray in nodeRays)
