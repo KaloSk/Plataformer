@@ -5,18 +5,20 @@ using UnityEngine;
 public class CameraMovement : MonoBehaviour {
 
     public Transform lookTarget;
-    public float targetHeight;
     public Vector3 targetPoint;
+    Vector3 localPoint;
 
 	// Use this for initialization
-	void Start () {
-		
+	void Start () { 
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
 
-        transform.position = Vector3.MoveTowards(transform.position, lookTarget.position + targetPoint, 5f * Time.deltaTime);
+        //Vector3 tt = new Vector3(transform.position.x, transform.position.y, lookTarget.position.z*-1);
+        localPoint=  lookTarget.position + (lookTarget.right*targetPoint.x) + (lookTarget.up*targetPoint.y) + (lookTarget.forward*targetPoint.z);
+        transform.position = Vector3.MoveTowards(transform.position, localPoint, 5f * Time.deltaTime);
+
         transform.LookAt(lookTarget);
 
         /*transform.LookAt(lookTarget);
