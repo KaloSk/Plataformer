@@ -1,11 +1,12 @@
 ﻿<Properties StartupConfiguration="{757C75B7-0C58-2D7C-D137-979FEEA657C9}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/PlayerMovement.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/SwitchControl.cs">
     <Files>
-      <File FileName="Assets/PlayerMovement.cs" Line="57" Column="9" />
-      <File FileName="Assets/CameraMovement.cs" Line="22" Column="9" />
-      <File FileName="Assets/BulletBehaivor.cs" Line="17" Column="3" />
-      <File FileName="Assets/SwitchControl.cs" Line="27" Column="10" />
+      <File FileName="Assets/SwitchControl.cs" Line="65" Column="1" />
+      <File FileName="Assets/NewScene/PlayerMovement3D.cs" Line="28" Column="1" />
+      <File FileName="Assets/NewScene/CamBehavior.cs" Line="15" Column="141" />
+      <File FileName="Assets/Scenes/CameraMovement.cs" Line="22" Column="38" />
+      <File FileName="Assets/Scenes/PlayerMovement.cs" Line="11" Column="34" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
