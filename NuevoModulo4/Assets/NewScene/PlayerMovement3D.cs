@@ -10,6 +10,8 @@ public class PlayerMovement3D : MonoBehaviour {
     Vector3 movement;
     Quaternion rotation;
 
+    public Animator animatorController;
+
 	// Use this for initialization
 	void Start () {
         groundCollection = new List<Collider>();
@@ -46,7 +48,7 @@ public class PlayerMovement3D : MonoBehaviour {
 
 	private void Update()
 	{
-        if(Input.GetKeyDown(KeyCode.Space)){
+        if(Input.GetKeyDown(KeyCode.Space) && grounded){
             rigigbody.AddForce(Vector3.up * 5f, ForceMode.Impulse);
         }
 	}
@@ -80,9 +82,9 @@ public class PlayerMovement3D : MonoBehaviour {
                     Debug.Log("SHOULD BE GROUNDED");
                     grounded = true;
                     groundCount++;
+                    animatorController.SetBool("isGrounded", grounded);
                     groundCollection.Add(collision.collider);
                     break;
-
                 }
             }
         }
@@ -95,6 +97,7 @@ public class PlayerMovement3D : MonoBehaviour {
         }
         if(groundCollection.Count<=0){
             grounded = false;
+            animatorController.SetBool("isGrounded", grounded);
         }
 	}
 
